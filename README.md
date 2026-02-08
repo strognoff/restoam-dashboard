@@ -5,9 +5,9 @@ A lightweight portal that links Assets, Locations, and Workorders. Mobile‑frie
 Set via `.env` or environment variables:
 
 ```
-VITE_ASSETS_URL=http://localhost:3000
-VITE_LOCATIONS_URL=http://localhost:3001
-VITE_WORKORDERS_URL=http://localhost:3002
+VITE_ASSETS_URL=http://localhost:5173
+VITE_LOCATIONS_URL=http://localhost:5174
+VITE_WORKORDERS_URL=http://localhost:5175
 ```
 
 ## Run

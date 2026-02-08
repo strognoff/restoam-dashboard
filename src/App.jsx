@@ -1,8 +1,8 @@
 import './App.css'
 
-const ASSETS_URL = import.meta.env.VITE_ASSETS_URL || 'http://localhost:3000'
-const LOCATIONS_URL = import.meta.env.VITE_LOCATIONS_URL || 'http://localhost:3001'
-const WORKORDERS_URL = import.meta.env.VITE_WORKORDERS_URL || 'http://localhost:3002'
+const ASSETS_URL = import.meta.env.VITE_ASSETS_URL || 'http://localhost:5173'
+const LOCATIONS_URL = import.meta.env.VITE_LOCATIONS_URL || 'http://localhost:5174'
+const WORKORDERS_URL = import.meta.env.VITE_WORKORDERS_URL || 'http://localhost:5175'
 
 function App() {
   return (

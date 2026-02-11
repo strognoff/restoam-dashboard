@@ -12,7 +12,8 @@
     "dev:check": "node scripts/dev-check.mjs",
     "dev:all": "node scripts/dev-all.mjs",
     "backend:up": "node scripts/backend-up.mjs",
-    "server": "node server/index.mjs"
+    "server": "node server/index.mjs",
+    "test:auth": "node --test server/tests/auth-api.test.mjs"
   },
   "dependencies": {
     "express": "^4.21.2",
@@ -26,6 +27,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
     "@playwright/test": "^1.58.0",
+    "supertest": "^7.1.1",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",

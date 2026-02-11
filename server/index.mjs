@@ -4,6 +4,7 @@ import { config, validateConfig } from './config.mjs';
 
 validateConfig();
 
+export function createApp() {
 const app = express();
 app.use(express.json());
 
@@ -88,6 +89,13 @@ app.get('/health', (_req, res) => {
   res.json({ ok: true, service: 'restoam-dashboard-auth', env: config.nodeEnv });
 });
 
-app.listen(3001, () => {
-  console.log('Dashboard auth API listening on http://127.0.0.1:3001');
-});
+return app;
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const app = createApp();
+  app.listen(3001, () => {
+    console.log('Dashboard auth API listening on http://127.0.0.1:3001');
+  });
+}
+

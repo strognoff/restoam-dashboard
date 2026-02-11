@@ -115,6 +115,23 @@ Default URLs:
 - **Blank app / wrong links**: verify dashboard `.env` URLs.
 - **Missing repo**: clone required frontend/backend repos beside `restoam-dashboard`.
 
+## Auth server run (for login/session)
+
+```bash
+npm run server
+```
+
+Runs on `http://127.0.0.1:3001` and provides:
+- `GET /api/auth/me`
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+
+## Auth tests
+
+```bash
+npm run test:auth
+```
+
 ## Individual dashboard run
 
 ```bash

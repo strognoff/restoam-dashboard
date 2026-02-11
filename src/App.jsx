@@ -1,35 +1,58 @@
-import { useEffect, useState } from 'react'
-import './App.css'
+import { useEffect, useState } from 'react';
+import './App.css';
 
-const ASSETS_URL = import.meta.env.VITE_ASSETS_URL || 'http://localhost:5173'
-const LOCATIONS_URL = import.meta.env.VITE_LOCATIONS_URL || 'http://localhost:5174'
-const WORKORDERS_URL = import.meta.env.VITE_WORKORDERS_URL || 'http://localhost:5175'
-const ADMIN_USER = import.meta.env.VITE_ADMIN_USER || 'admin'
-const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASS || 'admin'
-const SESSION_KEY = 'restoam_session'
+const ASSETS_URL = import.meta.env.VITE_ASSETS_URL || 'http://localhost:5173';
+const LOCATIONS_URL = import.meta.env.VITE_LOCATIONS_URL || 'http://localhost:5174';
+const WORKORDERS_URL = import.meta.env.VITE_WORKORDERS_URL || 'http://localhost:5175';
 
-function Login({ onLogin }) {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+async function api(path, options = {}) {
+  const res = await fetch(path, {
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+    ...options,
+  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (username === ADMIN_USER && password === ADMIN_PASS) {
-      const session = { user: username, createdAt: Date.now() }
-      localStorage.setItem(SESSION_KEY, JSON.stringify(session))
-      onLogin(session)
-      return
+  let body = {};
+  try { body = await res.json(); } catch {}
+  if (!res.ok) throw new Error(body?.error || `request failed (${res.status})`);
+  return body;
+}
+
+function Login({ onLoggedIn }) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (loading) return;
+    if (!username.trim() || !password.trim()) {
+      setError('Username and password are required.');
+      return;
     }
-    setError('Invalid credentials')
-  }
+
+    setLoading(true);
+    setError('');
+    try {
+      await api('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ username: username.trim(), password }),
+      });
+      onLoggedIn();
+    } catch {
+      setError('Invalid credentials');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="login-shell">
       <div className="login-card">
         <h1>RestoAM Login</h1>
         <p className="muted">Sign in to access the dashboard.</p>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={submit}>
           <label className="field">
             <span>Username</span>
             <input value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username" />
@@ -39,31 +62,16 @@ function Login({ onLogin }) {
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
           </label>
           {error && <div className="error">{error}</div>}
-          <button className="btn primary" type="submit">Sign in</button>
+          <button className="btn primary" type="submit" disabled={loading}>
+            {loading ? 'Signing in…' : 'Sign in'}
+          </button>
         </form>
       </div>
     </div>
-  )
+  );
 }
 
-function App() {
-  const [session, setSession] = useState(null)
-
-  useEffect(() => {
-    const raw = localStorage.getItem(SESSION_KEY)
-    if (raw) {
-      try {
-        setSession(JSON.parse(raw))
-      } catch {
-        localStorage.removeItem(SESSION_KEY)
-      }
-    }
-  }, [])
-
-  if (!session) {
-    return <Login onLogin={setSession} />
-  }
-
+function Dashboard({ onLogout }) {
   return (
     <div className="app">
       <header className="topbar">
@@ -72,7 +80,7 @@ function App() {
           <a href={ASSETS_URL}>Assets</a>
           <a href={LOCATIONS_URL}>Locations</a>
           <a href={WORKORDERS_URL}>Workorders</a>
-          <button className="btn ghost" onClick={() => { localStorage.removeItem(SESSION_KEY); setSession(null) }}>Sign out</button>
+          <button className="btn ghost" onClick={onLogout}>Sign out</button>
         </nav>
       </header>
 
@@ -105,7 +113,57 @@ function App() {
         </section>
       </main>
     </div>
-  )
+  );
 }
 
-export default App
+function App() {
+  const [authChecked, setAuthChecked] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
+
+  const checkAuth = async () => {
+    try {
+      const me = await api('/api/auth/me');
+      setAuthenticated(Boolean(me?.authenticated));
+    } catch {
+      setAuthenticated(false);
+    } finally {
+      setAuthChecked(true);
+    }
+  };
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  useEffect(() => {
+    if (!authChecked) return;
+    const onLoginRoute = window.location.pathname === '/login';
+
+    if (authenticated && onLoginRoute) {
+      window.history.replaceState({}, '', '/');
+    }
+    if (!authenticated && !onLoginRoute) {
+      window.history.replaceState({}, '', '/login');
+    }
+  }, [authChecked, authenticated]);
+
+  const handleLoggedIn = async () => {
+    await checkAuth();
+    window.history.replaceState({}, '', '/');
+  };
+
+  const handleLogout = async () => {
+    try { await api('/api/auth/logout', { method: 'POST' }); } catch {}
+    setAuthenticated(false);
+    window.history.replaceState({}, '', '/login');
+  };
+
+  if (!authChecked) return <div className="login-shell"><div className="login-card">Loading…</div></div>;
+
+  const onLoginRoute = window.location.pathname === '/login';
+  if (!authenticated || onLoginRoute) return <Login onLoggedIn={handleLoggedIn} />;
+
+  return <Dashboard onLogout={handleLogout} />;
+}
+
+export default App;

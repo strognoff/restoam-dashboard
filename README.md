@@ -139,6 +139,15 @@ Expected: all FE ports, API ports, and Postgres (`5432`) show ✅.
 - **Backend unreachable**: ensure APIs are running on `8080/8081/8082`.
 - **Blank app / wrong links**: verify dashboard `.env` URLs.
 - **Missing repo**: clone required frontend/backend repos beside `restoam-dashboard`.
+- **Docker permission denied (`/var/run/docker.sock`)**: add user to docker group and re-login.
+
+### Known upstream backend blocker (current)
+
+At current repository HEAD:
+- `restoam-location` and `restoam-workorders` fail compile with unresolved references in `cass/web/AppRoutes.kt` (`Asset`, `AssetService` symbols missing).
+- `restoam-asset` starts successfully on `8080`.
+
+This means full end-to-end stack validation is currently blocked until those two backend repos are fixed upstream or patched locally.
 
 ## Auth server run (for login/session)
 

@@ -77,7 +77,24 @@ Run prerequisite check from dashboard repo:
 npm run backend:up
 ```
 
-If prerequisites are present, start each backend service:
+Start Postgres first (required by all three APIs):
+
+```bash
+docker run -d --name restoam-postgres \
+  -e POSTGRES_USER=restoam_user \
+  -e POSTGRES_PASSWORD=restoam_password \
+  -e POSTGRES_DB=restoam_db \
+  -p 5432:5432 postgres:15
+```
+
+If Docker returns permission denied on `/var/run/docker.sock`, add your user to docker group and re-login:
+
+```bash
+sudo usermod -aG docker $USER
+# logout/login, then retry docker command
+```
+
+Then start each backend service:
 
 ```bash
 cd ../restoam-asset && ./gradlew bootRun --args="--server.port=8080"
@@ -98,6 +115,14 @@ Default URLs:
 - Assets: `http://127.0.0.1:5173`
 - Locations: `http://127.0.0.1:5174`
 - Workorders: `http://127.0.0.1:5175`
+
+### 7) Health check command
+
+```bash
+npm run stack:health
+```
+
+Expected: all FE ports, API ports, and Postgres (`5432`) show ✅.
 
 ## Smoke test flow
 

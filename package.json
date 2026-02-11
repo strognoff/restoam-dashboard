@@ -12,6 +12,7 @@
     "dev:check": "node scripts/dev-check.mjs",
     "dev:all": "node scripts/dev-all.mjs",
     "backend:up": "node scripts/backend-up.mjs",
+    "stack:health": "node scripts/stack-health.mjs",
     "server": "node server/index.mjs",
     "test:auth": "node --test server/tests/auth-api.test.mjs"
   },

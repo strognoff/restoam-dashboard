@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test:e2e": "playwright test",
     "dev:check": "node scripts/dev-check.mjs",
-    "dev:all": "node scripts/dev-all.mjs"
+    "dev:all": "node scripts/dev-all.mjs",
+    "backend:up": "node scripts/backend-up.mjs"
   },
   "dependencies": {
     "react": "^19.2.0",

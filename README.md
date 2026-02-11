@@ -60,12 +60,18 @@ This verifies:
 
 ### 5) Start backend APIs (if not already running)
 
-From each backend repo:
+Run prerequisite check from dashboard repo:
 
 ```bash
-cd ../restoam-asset && docker build -t restoam-asset:latest . && docker run -d -p 8080:8080 --name restoam-asset-container restoam-asset:latest
-cd ../restoam-location && docker build -t restoam-location:latest . && docker run -d -p 8081:8080 --name restoam-location-container restoam-location:latest
-cd ../restoam-workorders && docker build -t restoam-workorders:latest . && docker run -d -p 8082:8080 --name restoam-workorders-container restoam-workorders:latest
+npm run backend:up
+```
+
+If prerequisites are present, start each backend service:
+
+```bash
+cd ../restoam-asset && ./gradlew bootRun --args="--server.port=8080"
+cd ../restoam-location && ./gradlew bootRun --args="--server.port=8081"
+cd ../restoam-workorders && ./gradlew bootRun --args="--server.port=8082"
 ```
 
 ### 6) Start all frontends with one command

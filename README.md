@@ -32,9 +32,20 @@ Template values:
 VITE_ASSETS_URL=http://127.0.0.1:5173
 VITE_LOCATIONS_URL=http://127.0.0.1:5174
 VITE_WORKORDERS_URL=http://127.0.0.1:5175
-VITE_ADMIN_USER=admin
-VITE_ADMIN_PASS=admin
+
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=admin
+SESSION_SECRET=local-dev-session-secret-change-me
 ```
+
+Auth contract:
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD`
+- `SESSION_SECRET`
+
+Notes:
+- Local dev defaults are allowed.
+- In production, use non-default credentials and a strong secret.
 
 ### 3) Install deps
 

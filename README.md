@@ -141,13 +141,15 @@ Expected: all FE ports, API ports, and Postgres (`5432`) show ✅.
 - **Missing repo**: clone required frontend/backend repos beside `restoam-dashboard`.
 - **Docker permission denied (`/var/run/docker.sock`)**: add user to docker group and re-login.
 
-### Known upstream backend blocker (current)
+### Backend build note (resolved)
 
-At current repository HEAD:
-- `restoam-location` and `restoam-workorders` fail compile with unresolved references in `cass/web/AppRoutes.kt` (`Asset`, `AssetService` symbols missing).
-- `restoam-asset` starts successfully on `8080`.
+During validation, two backend repos required fixes to build/run cleanly:
+- `strognoff/restoam-location` commit `1ef94e1`
+- `strognoff/restoam-workorders` commit `a298248`
 
-This means full end-to-end stack validation is currently blocked until those two backend repos are fixed upstream or patched locally.
+Applied fixes:
+- Gradle wrapper distribution URL changed from machine-local file path to official Gradle distribution URL.
+- Removed invalid Kotlin `AppRoutes.kt` files that referenced non-existent `Asset`/`AssetService` symbols.
 
 ## Auth server run (for login/session)
 

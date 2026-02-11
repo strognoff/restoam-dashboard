@@ -20,7 +20,13 @@ A lightweight portal that links Assets, Locations, and Workorders. Mobile-friend
 
 ### 2) Dashboard env
 
-Create `.env` in `restoam-dashboard`:
+Create `.env` in `restoam-dashboard` (recommended: copy from template):
+
+```bash
+cp .env.example .env
+```
+
+Template values:
 
 ```bash
 VITE_ASSETS_URL=http://127.0.0.1:5173

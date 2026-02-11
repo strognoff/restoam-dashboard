@@ -58,7 +58,17 @@ This verifies:
 - expected ports are free/in use
 - backend reachability on `8080/8081/8082`
 
-### 5) Start all frontends with one command
+### 5) Start backend APIs (if not already running)
+
+From each backend repo:
+
+```bash
+cd ../restoam-asset && docker build -t restoam-asset:latest . && docker run -d -p 8080:8080 --name restoam-asset-container restoam-asset:latest
+cd ../restoam-location && docker build -t restoam-location:latest . && docker run -d -p 8081:8080 --name restoam-location-container restoam-location:latest
+cd ../restoam-workorders && docker build -t restoam-workorders:latest . && docker run -d -p 8082:8080 --name restoam-workorders-container restoam-workorders:latest
+```
+
+### 6) Start all frontends with one command
 
 From `restoam-dashboard`:
 

@@ -7,6 +7,24 @@ validateConfig();
 const app = express();
 app.use(express.json());
 
+function isAuthenticated(req) {
+  return Boolean(req.session?.authenticated && req.session?.username);
+}
+
+function requireApiAuth(req, res, next) {
+  if (!isAuthenticated(req)) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  return next();
+}
+
+function requirePageAuth(req, res, next) {
+  if (!isAuthenticated(req)) {
+    return res.redirect(`${config.dashboardWebUrl}/login`);
+  }
+  return next();
+}
+
 app.use(
   session({
     name: 'restoam.sid',
@@ -49,6 +67,21 @@ app.post('/api/auth/logout', (req, res) => {
     res.clearCookie('restoam.sid');
     res.status(200).json({ ok: true });
   });
+});
+
+app.get('/api/dashboard/summary', requireApiAuth, (req, res) => {
+  return res.json({ ok: true, username: req.session.username });
+});
+
+app.get('/app', requirePageAuth, (_req, res) => {
+  return res.redirect(`${config.dashboardWebUrl}/`);
+});
+
+app.get('/login', (req, res) => {
+  if (isAuthenticated(req)) {
+    return res.redirect(`${config.dashboardWebUrl}/`);
+  }
+  return res.redirect(`${config.dashboardWebUrl}/login`);
 });
 
 app.get('/health', (_req, res) => {

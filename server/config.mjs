@@ -12,6 +12,7 @@ export const config = {
   adminUsername: read('ADMIN_USERNAME', 'admin'),
   adminPassword: read('ADMIN_PASSWORD', 'admin'),
   sessionSecret: read('SESSION_SECRET', 'local-dev-session-secret-change-me'),
+  dashboardWebUrl: read('DASHBOARD_WEB_URL', 'http://127.0.0.1:5176'),
 };
 
 export function validateConfig() {
